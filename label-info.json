@@ -1,0 +1,226 @@
+{
+  "labels": [
+    {
+      "name":"priority: critical",
+      "color":"9f0000",
+      "description":"Priority level - highest priority and urgent"
+    },
+    {
+      "name":"priority: high",
+      "color":"e30303",
+      "description":"Priority level - takes precedence over medium and low priority issues",
+      "legacy_names": [
+        "priority"
+      ]
+    },
+    {
+      "name":"priority: medium",
+      "color":"f2736f",
+      "description":"Priority level - default priority and indicates priority level has been determined"
+    },
+    {
+      "name":"priority: low",
+      "color":"ffb3b3",
+      "description":"Priority level - lowest priority and should not take precedence over higher priority issues"
+    },
+    {
+      "name":"blocked",
+      "color":"1c6F87",
+      "description":"Status - issue is blocked by another issue or dependency"
+    },
+    {
+      "name":"blocker",
+      "color":"1c6F87",
+      "description":"Status - issue is blocking other issue(s)"
+    },
+    {
+      "name":"stalled",
+      "color":"8edee7",
+      "description":"Status - work lacks documented progress"
+    },
+    {
+      "name":"question",
+      "color":"8edee7",
+      "description":"Status - a comment in this issue or pull request contains a request for further information",
+      "legacy_names":[
+        "question"
+      ]
+    },
+    {
+      "name":"needs estimate",
+      "color":"8edee7",
+      "description":"Status - please apply an estimate to this issue before proceeding"
+    },
+    {
+      "name":"changes requested",
+      "color":"8edee7",
+      "description":"Status - additional work is necessary"
+    },
+    {
+      "name":"has workaround",
+      "color":"8edee7",
+      "description":"Status - an alternative solution has been provided for the issue"
+    },
+    {
+      "name":"duplicate",
+      "color":"8edee7",
+      "description":"Status - comparable issue or pull request already exists",
+      "legacy_names":[
+        "duplicate"
+      ]
+    },
+    {
+      "name":"pattern",
+      "color":"a8d49a",
+      "description":"Job type: Front-end - development work in pattern library"
+    },
+    {
+      "name":"theming",
+      "color":"a8d49a",
+      "description":"Job type: Front-end - development work in Drupal theme"
+    },
+    {
+      "name":"migration",
+      "color":"dbff89",
+      "description":"Job type: Back-end - development work with Drupal Migrate API"
+    },
+    {
+      "name":"drupal",
+      "color":"dbff89",
+      "description":"Job type: Back-end - Drupal site-building work"
+    },
+    {
+      "name":"ux/design",
+      "color":"dbff89",
+      "description":"Job type: Design - creation of design artifacts, often outside of codebase"
+    },
+    {
+      "name":"post-migration",
+      "color":"ffeb6d",
+      "description":"Job type: Content - work that needs to be performed after the migration"
+    },
+    {
+      "name":"translation",
+      "color":"ffeb6d",
+      "description":"Job type: Content - requires translation of content to another language"
+    },
+    {
+      "name":"content",
+      "color":"ffeb6d",
+      "description":"Job type: Content - requires adding or updating content within the Drupal CMS"
+    },
+    {
+      "name":"documentation",
+      "color":"ffdd00",
+      "description":"Job type: Other - work related to documentation outside of Drupal UI"
+    },
+    {
+      "name":"deployment",
+      "color":"ffa64d",
+      "description":"DevOps - issue type used to track preparation and deployment of release to an environment"
+    },
+    {
+      "name":"has manual deployment",
+      "color":"ffa64d",
+      "description":"DevOps - a manual deployment step has been documented in the pull request description",
+      "legacy_names": [
+        "manual deployment"
+      ]
+    },
+    {
+      "name":"hotfix",
+      "color":"ffa64d",
+      "description":"DevOps - deploy changes independently of work on scheduled release in develop branch"
+    },
+    {
+      "name":"infrastructure",
+      "color":"ffa64d",
+      "description":"DevOps - setup or management of local, hosting or continuous integration environments"
+    },
+    {
+      "name":"epic",
+      "color":"e684ad",
+      "description":"Planning - epic issues track the progress of multiple issues and can span releases (from ZenHub)"
+    },
+    {
+      "name":"sprint planning",
+      "color":"e684ad",
+      "description":"Planning - work related to project planning"
+    },
+    {
+      "name":"retrospective",
+      "color":"e684ad",
+      "description":"Planning - issue thread dedicated to sprint or project retrospectives"
+    },
+    {
+      "name":"user story",
+      "color":"e684ad",
+      "description":"Planning - issue follows user story template: As a <user type>, I want to <task> so that <goal>"
+    },
+    {
+      "name":"revise issue",
+      "color":"e684ad",
+      "description":"Planning - issue description is vague, incomplete, or inaccurate"
+    },
+    {
+      "name":"security",
+      "color":"98aeff",
+      "description":"Supplementary - work related to security updates, audits or enhancements"
+    },
+    {
+      "name":"seo",
+      "color":"98aeff",
+      "description":"Supplementary - work specifically targeting Search Engine Optimization"
+    },
+    {
+      "name":"social",
+      "color":"98aeff",
+      "description":"Supplementary - implements social sharing features or analytics"
+    },
+    {
+      "name":"performance",
+      "color":"98aeff",
+      "description":"Supplementary - front-end or back-end performance improvements"
+    },
+    {
+      "name":"x-browser: edge",
+      "color":"98aeff",
+      "description":"Supplementary - cross-browser compatibility for MS Edge"
+    },
+    {
+      "name":"x-browser: ie10",
+      "color":"98aeff",
+      "description":"Supplementary - cross-browser compatibility for MS Internet Explorer 10"
+    },
+    {
+      "name":"x-browser: ie11",
+      "color":"98aeff",
+      "description":"Supplementary - cross-browser compatibility for MS Internet Explorer 11"
+    },
+    {
+      "name":"x-browser: safari",
+      "color":"98aeff",
+      "description":"Supplementary - cross-browser compatibility for Safari"
+    },
+    {
+      "name":"maintenance program",
+      "color":"98aeff",
+      "description":"Supplementary - monthly maintenance work"
+    },
+    {
+      "name":"discovery",
+      "color":"98aeff",
+      "description":"Supplementary - discovery and prototyping work"
+    },
+    {
+      "name":"multilingual",
+      "color":"98aeff",
+      "description":"Supplementary - work related to multilingual development"
+    },
+    {
+      "name":"search",
+      "color":"98aeff",
+      "description":"Supplementary - work related to internal site search"
+    }
+  ]
+}
