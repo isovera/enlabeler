@@ -1,4 +1,4 @@
-# enlabeler
+# Enlabeler
 
 Enlabeler is a script that adds, updates and removes the labels for a GitHub issue queue based on a standardized configuration file. Inspired by [this style guide](https://robinpowered.com/blog/best-practice-system-for-organizing-and-tagging-github-issues/), Enlabeler is opinionated and organizes issue labels into the following groups:
 
