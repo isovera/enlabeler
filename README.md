@@ -1,5 +1,14 @@
 # enlabeler
 
+Enlabeler is a script that adds, updates and removes the labels for a GitHub issue queue based on a standardized configuration file. Inspired by [this style guide](https://robinpowered.com/blog/best-practice-system-for-organizing-and-tagging-github-issues/), Enlabeler is opinionated and organizes issue labels into the following groups:
+
+- _Priority Level_ - level of urgency for a given issue
+- _Status_ - status of work on the issue
+- _Job Type_ - category of work required to complete the issue
+- _DevOps_ - issues related to deployment and external infrastructure
+- _Planning_ - project management and planning work
+- _Supplementary_ - any additional technical or related information for the issue 
+
 ## Prerequisites
 
 You will need the following to execute this script:
@@ -17,9 +26,9 @@ You will need the following to execute this script:
 3. Open your terminal in the same directory as this script and execute the script: `./enlabeler.sh`
 4. Follow the instructions within the script.
 
-## GitHub issue label legend
+## Group Label Legend
 
-GitHub issue labels are grouped by colors corresponding to general workflow themes, as shown in the table below.
+Enlabeler groups issue labels by color and description prefixes as shown in the table below. High priority and blocking-related labels are exceptions to the standard color scheme, and are given additional contrast to increase their salience.
 
 Group | Subgroup | Label |
 --- | --- | ---
