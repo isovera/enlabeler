@@ -26,7 +26,7 @@ You will need the following to execute this script:
 3. Open your terminal in the same directory as this script and execute the script: `./enlabeler.sh`
 4. Follow the instructions within the script.
 
-## Group Label Legend
+## Label Groups
 
 Enlabeler groups issue labels by color and description prefixes as shown in the table below. High priority and blocking-related labels are exceptions to the standard color scheme, and are given additional contrast to increase their salience.
 
