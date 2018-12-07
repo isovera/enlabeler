@@ -3,7 +3,7 @@
 # USE: initialize github workflows
 #
 # Updates label colors, adds new defaults, and deletes obsolete labels
-# 	-uses data from label.info.txt file
+# 	-uses data from label-info.json file
 #
 # BEFORE RUNNING:
 #	Have GitHub login credentials ready
