@@ -101,7 +101,7 @@ function get_data(){
 }
 
 #***************************** Terminal Interface **************************
-echo "Welcome to setup_github_issues2.sh!
+echo "Welcome to Enlabeler!
 Credentials required: Github username/password"
 
 echo -n "GitHub User: "
