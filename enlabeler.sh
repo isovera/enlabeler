@@ -127,6 +127,7 @@ read -p "GitHub Repo (expected format is 'owner/repository' e.g. 'isovera/enlabe
 # Get ZenHub info
 if $ZENHUB; then
     read -sp "ZenHub Token: " TOKEN
+    echo
     read -p "Label Pipelines file (default: labels-pipelines.json): " PIPELINES
     if [ -z $PIPELINES ]; then
         PIPELINES="labels-pipelines.json"
