@@ -101,20 +101,38 @@ function get_data(){
 }
 
 #***************************** Terminal Interface **************************
+ZENHUB=false
+while getopts ':z' opt; do
+    case $opt in
+      z) ZENHUB=true
+         ;;
+     \?) echo "Invalid option: -$OPTARG" >&2
+         exit 2
+         ;;
+    esac
+done
+
 echo "Welcome to Enlabeler!
 Credentials required: Github username/password"
 
-echo -n "GitHub User: "
-read USER
+read -p "GitHub User: " USER
 
 # Generate a personal access token at https://github.com/settings/tokens
-echo -n "GitHub Password (or token if using 2fa): "
-read -s PASS
+read -sp "GitHub Password (or token if using 2fa): " PASS
 echo
 
 # Get repo / user info
-echo -n "GitHub Repo (expected format is 'owner/repository' e.g. 'isovera/enlabeler'): "
-read REPO
+read -p "GitHub Repo (expected format is 'owner/repository' e.g. 'isovera/enlabeler'): " REPO
+
+# Get ZenHub info
+if $ZENHUB; then
+    read -sp "ZenHub Token: " TOKEN
+    read -p "Label Pipelines file (default: labels-pipelines.json): " PIPELINES
+    if [ -z $PIPELINES ]; then
+        PIPELINES="labels-pipelines.json"
+    fi
+    echo
+fi
 
 REPO_USER=$(echo "$REPO" | cut -f1 -d /)
 REPO_NAME=$(echo "$REPO" | cut -f2 -d /)
