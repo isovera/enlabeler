@@ -70,6 +70,11 @@
       ]
     },
     {
+      "name":"recommendation",
+      "color":"8edee7",
+      "description":"Status - proposed work that requires authorization"
+    },
+    {
       "name":"pattern",
       "color":"a8d49a",
       "description":"Job type: Front-end - development work in pattern library"
