@@ -19,11 +19,11 @@ function update_and_delete(){
             new_name=$(jq -n "$data | .name")
             echo "Renaming $name to $new_name"
             labels_updated+=($new_name)
-            curl --user "$USER:$PASS" --include --request PATCH --data "$data" \
-                -H "Accept: application/vnd.github.symmetra-preview+json" $url
+            curl --silent --user "$USER:$PASS" --request PATCH --data "$data" \
+                -H "Accept: application/vnd.github.symmetra-preview+json" $url | jq . >&3
         elif [[ $ANSWER = *Y* ]]; then
             echo "Deleting label: $name"
-            curl --user "$USER:$PASS" --include --request DELETE $url
+            curl --silent --user "$USER:$PASS" --request DELETE $url | jq . >&3
         fi
    done
 }
@@ -32,8 +32,8 @@ function add_defaults(){
     # Iterate through all labels in JSON file except those renamed from legacy labels
     jq -nc "$default_labels | .[]" | while IFS=$'\n' read new_label; do
         echo "Creating new label: $(jq -n "$new_label | .name")"
-        curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
-             "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
+        curl -sH "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --request POST --data "$new_label" \
+             "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels" | jq . >&3
     done
     jq -nc "$legacy_labels | .[] | del(.legacy_names)" | while read new_label; do
         name=$(jq -n "$new_label | .name")
@@ -96,6 +96,24 @@ function get_data(){
 }
 
 #***************************** Terminal Interface **************************
+VERBOSE=false
+while getopts 'v' OPTION; do
+    case $OPTION in
+        v) VERBOSE=true
+           ;;
+        ?) echo "Usage: ${0##*/} [-a] [-b value] args" >&2
+           exit 2
+           ;;
+    esac
+done
+
+# All output directed to 3 will be displayed in verbose mode only.
+if $VERBOSE; then
+    exec 3>&1
+else
+    exec 3>/dev/null
+fi
+
 echo "Welcome to Enlabeler!
 Credentials required: Github username/password"
 
