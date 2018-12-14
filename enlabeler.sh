@@ -113,7 +113,14 @@ while getopts 'z' opt; do
 done
 
 echo "Welcome to Enlabeler!
-Credentials required: Github username/password"
+	Credentials required:
+		• Github username/password"
+if $ZENHUB; then
+    echo "		• Zenhub access token (obtainable from https://app.zenhub.com/dashboard/tokens)
+
+	PLEASE (!) ensure you have created the necessary ZenHub pipelines"
+fi
+echo
 
 read -p "GitHub User: " USER
 
@@ -126,7 +133,7 @@ read -p "GitHub Repo (expected format is 'owner/repository' e.g. 'isovera/enlabe
 
 # Get ZenHub info
 if $ZENHUB; then
-    read -sp "ZenHub Token: " TOKEN
+    read -sp "ZenHub Token (find at https://app.zenhub.com/dashboard/tokens): " TOKEN
     echo
     read -p "Label Pipelines file (default: labels-pipelines.json): " PIPELINES
     if [ -z $PIPELINES ]; then
