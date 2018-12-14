@@ -102,11 +102,11 @@ function get_data(){
 
 #***************************** Terminal Interface **************************
 ZENHUB=false
-while getopts ':z' opt; do
+while getopts 'z' opt; do
     case $opt in
       z) ZENHUB=true
          ;;
-     \?) echo "Invalid option: -$OPTARG" >&2
+     \?) echo "Usage: ${0##*/} [-z]" >&2
          exit 2
          ;;
     esac
