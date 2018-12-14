@@ -131,8 +131,8 @@ if $ZENHUB; then
     read -p "Label Pipelines file (default: labels-pipelines.json): " PIPELINES
     if [ -z $PIPELINES ]; then
         PIPELINES="labels-pipelines.json"
+        echo Using $PIPELINES...
     fi
-    echo
 fi
 
 REPO_USER=$(echo "$REPO" | cut -f1 -d /)
