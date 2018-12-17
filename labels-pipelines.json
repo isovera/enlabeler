@@ -1,0 +1,35 @@
+[
+    {
+        "name":"0 - Backlog"
+    },
+    {
+        "name":"1 - Slated"
+    },
+    {
+        "name":"2 - Code"
+    },
+    {
+        "name":"3A - Feature QA"
+    },
+    {
+        "name":"3B - Code Review"
+    },
+    {
+        "name":"4 - Dev queue"
+    },
+    {
+        "name":"5 - Dev"
+    },
+    {
+        "name":"6 - Test queue"
+    },
+    {
+        "name":"7 - Test QA"
+    },
+    {
+        "name":"8 - Live queue"
+    },
+    {
+        "name":"9 - Live QA"
+    }
+]
