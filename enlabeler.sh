@@ -186,7 +186,7 @@ if $ZENHUB; then
     if [ -z $PIPELINES ]; then
         PIPELINES="labels-pipelines.json"
     fi
-    if [ -e $PIPELINES && -r $PIPELINES ]; then
+    if [ -e $PIPELINES ] && [ -r $PIPELINES ]; then
         echo Reading $PIPELINES...
     else
         echo "Could not open $PIPELINES" >&2
