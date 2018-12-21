@@ -138,7 +138,12 @@ if $ZENHUB; then
     read -p "Label Pipelines file (default: labels-pipelines.json): " PIPELINES
     if [ -z $PIPELINES ]; then
         PIPELINES="labels-pipelines.json"
-        echo Using $PIPELINES...
+    fi
+    if [ -e $PIPELINES && -r $PIPELINES ]; then
+        echo Reading $PIPELINES...
+    else
+        echo "Could not open $PIPELINES" >&2
+        exit 3
     fi
 fi
 
