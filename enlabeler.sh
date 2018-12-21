@@ -8,6 +8,53 @@
 # BEFORE RUNNING:
 #	Have GitHub login credentials ready
 
+#function git_to_zen(){
+#    # Iterate through issues
+#    movetoclose=("4 - Dev queue" "5 - Dev" "6 - Test queue" "7 - Test QA" "8 - Live queue" "9 - Live QA")
+#    for issue_num in ${issue_nums[@]}
+#    do
+#        echo "Issue num is $issue_num"
+#        tagged_issues=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/issues/"$issue_num"/labels" | jsonValue name)
+#        tagged_issues="${tagged_issues// /%20}"
+#        tagged_issues="${tagged_issues//\"}"
+#        # Iterate through labels tagged for each issue
+#        for label in ${tagged_issues[@]}
+#        do
+#            label="${label/"%20"/}"
+#            label="${label//%20/ }"
+#            echo $label
+#            # Move issues tagged w/ old Github progress labels to Zenhub pipelines
+#            if [ "$label" = "0 - Backlog" ]; then
+#                curl -H "X-Authentication-Token: $TOKEN" --data "pipeline_id=$backlog_ID&position=$pos" \
+#                     https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$issue_num"/moves
+#            elif [ "$label" = "1 - Slated" ]; then
+#                curl -H "X-Authentication-Token: $TOKEN" --data "pipeline_id=$slated_ID&position=$pos" \
+#                     https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$issue_num"/moves
+#            elif [ "$label" = "2 - Code" ]; then
+#                curl -H "X-Authentication-Token: $TOKEN" --data "pipeline_id=$in_progress_ID&position=$pos" \
+#                     https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$issue_num"/moves
+#            elif [ "$label" = "3A - Feature QA" ]; then
+#                curl -H "X-Authentication-Token: $TOKEN" --data "pipeline_id=$feature_QA_ID&position=$pos" \
+#                     https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$issue_num"/moves
+#            elif [ "$label" = "3B - Code Review" ]; then
+#                curl -H "X-Authentication-Token: $TOKEN" --data "pipeline_id=$code_review_ID&position=$pos" \
+#                     https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$issue_num"/moves
+#            elif [[ " ${movetoclose[@]} " =~ " ${label} " ]]; then
+#                curl --user "$USER:$PASS" --include --request PATCH --data '{"state":"closed"}' \
+#                     https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/issues/"$issue_num"
+#            # Map Github estimate labels to Zenhub estimates
+#            elif [[ $label = *"E."* ]]; then
+#                temp=${label#*=}
+#                temp=${temp#*.}
+#                est=${temp%" h"*}
+#                # Set the estimate in Zenhub
+#                curl -X PUT https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$issue_num"/estimate \
+#                -H 'content-type: application/json' -H "x-authentication-token: $TOKEN" -d '{"estimate":'$est'}'
+#            fi
+#        done
+#    done
+#}
+
 function jsonValue(){
 	KEY=$1
 	num=$2
