@@ -8,7 +8,8 @@
 # BEFORE RUNNING:
 #	Have GitHub login credentials ready
 
-#function git_to_zen(){
+function git_to_zen(){
+    echo Transfer GitHub labels into ZenHub.
 #    # Iterate through issues
 #    movetoclose=("4 - Dev queue" "5 - Dev" "6 - Test queue" "7 - Test QA" "8 - Live queue" "9 - Live QA")
 #    for issue_num in ${issue_nums[@]}
@@ -53,7 +54,7 @@
 #            fi
 #        done
 #    done
-#}
+}
 
 function jsonValue(){
 	KEY=$1
@@ -199,6 +200,9 @@ REPO_NAME=$(echo "$REPO" | cut -f2 -d /)
 
 read -e -p 'Would you like to delete obsolete labels? (Y/N):' ANSWER
 get_data
+if [[ $ZENHUB ]]; then
+    git_to_zen
+fi
 if [[ $ANSWER =~ ^[Nn]$ ]]; then
     echo 'Running without deleting old labels'
     update_and_delete
