@@ -198,12 +198,12 @@ fi
 REPO_USER=$(echo "$REPO" | cut -f1 -d /)
 REPO_NAME=$(echo "$REPO" | cut -f2 -d /)
 
-read -e -p 'Would you like to delete obsolete labels? (Y/N):' ANSWER
+read -p 'Would you like to delete obsolete labels? (Y/N): ' ANSWER
 get_data
 if [[ $ZENHUB ]]; then
     git_to_zen
 fi
-if [[ $ANSWER =~ ^[Nn]$ ]]; then
+if [[ $ANSWER =~ ^[Nn][Oo]?$ ]]; then
     echo 'Running without deleting old labels'
     update_and_delete
 else
