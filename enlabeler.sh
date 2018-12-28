@@ -62,7 +62,7 @@ function jsonValue(){
 }
 
 function update_and_delete(){
-	old_labels="${old_labels// /%20}"
+    old_labels="${old_labels// /%20}"
     for label in ${old_labels[@]}
     do
         master_label_data=${master_label_data[@]#*'"url": "'}
@@ -198,12 +198,12 @@ REPO_USER=$(echo "$REPO" | cut -f1 -d /)
 REPO_NAME=$(echo "$REPO" | cut -f2 -d /)
 
 read -e -p 'Would you like to delete obsolete labels? (Y/N):' ANSWER
-    get_data
-    if [[ $ANSWER =~ ^[Nn]$ ]]; then
-		echo 'Running without deleting old labels'
-        update_and_delete
-	else
-        update_and_delete
-	fi
+get_data
+if [[ $ANSWER =~ ^[Nn]$ ]]; then
+    echo 'Running without deleting old labels'
+    update_and_delete
+else
+    update_and_delete
+fi
 add_defaults
 
