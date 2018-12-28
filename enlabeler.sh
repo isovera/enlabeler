@@ -12,7 +12,7 @@ function git_to_zen(){
     echo Transfer GitHub labels into ZenHub.
     # Iterate through issues
 #    movetoclose=("4 - Dev queue" "5 - Dev" "6 - Test queue" "7 - Test QA" "8 - Live queue" "9 - Live QA")
-#    IFS=$'\n' pipeline_labels=( $(jq .[].name < $PIPELINES) )
+    IFS=$'\n' pipeline_labels=( $(jq .[].name < $PIPELINES) )
     for num in ${issue_nums[@]}; do
         echo "Issue num is $num"
         curl -u $USER:$PASS "https://api.github.com/repos/$REPO_USER/$REPO_NAME/issues/$num/labels" \
