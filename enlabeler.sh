@@ -11,18 +11,13 @@
 function git_to_zen(){
     echo Transfer GitHub labels into ZenHub.
     # Iterate through issues
-    movetoclose=("4 - Dev queue" "5 - Dev" "6 - Test queue" "7 - Test QA" "8 - Live queue" "9 - Live QA")
+#    movetoclose=("4 - Dev queue" "5 - Dev" "6 - Test queue" "7 - Test QA" "8 - Live queue" "9 - Live QA")
+#    IFS=$'\n' pipeline_labels=( $(jq .[].name < $PIPELINES) )
     for num in ${issue_nums[@]}; do
         echo "Issue num is $num"
-        tagged=( $(curl --user $USER:$PASS "https://api.github.com/repos/$REPO_USER/$REPO_NAME/issues/$num/labels" | jq .[].name) )
-#        tagged="${tagged// /%20}"
-#        tagged="${tagged//\"}"
-#        # Iterate through labels tagged for each issue
-#        for label in ${tagged[@]}
-#        do
-#            label="${label/"%20"/}"
-#            label="${label//%20/ }"
-#            echo $label
+        curl -u $USER:$PASS "https://api.github.com/repos/$REPO_USER/$REPO_NAME/issues/$num/labels" \
+             | jq .[].name | while IFS=$'\n' read -r label; do
+            echo $label
 #            # Move issues tagged w/ old Github progress labels to Zenhub pipelines
 #            if [ "$label" = "0 - Backlog" ]; then
 #                curl -H "X-Authentication-Token: $TOKEN" --data "pipeline_id=$backlog_ID&position=$pos" \
@@ -51,7 +46,7 @@ function git_to_zen(){
 #                curl -X PUT https://api.zenhub.io/p1/repositories/"$repo_ID"/issues/"$num"/estimate \
 #                -H 'content-type: application/json' -H "x-authentication-token: $TOKEN" -d '{"estimate":'$est'}'
 #            fi
-#        done
+        done
     done
 }
 
