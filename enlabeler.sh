@@ -10,30 +10,17 @@
 
 function update_and_delete(){
 	old_labels="${old_labels// /%20}"
-    for label in ${old_labels[@]}
-    do
-        master_label_data=${master_label_data[@]#*'"url": "'}
-		# Format the label names
-        label="${label/'%20'/}"
-        if [ ! "${label: -1}" = '"' ]; then
-			manage_json_error $label
-		fi
-		#label=$(echo "$label" | tr '[:upper:]' '[:lower:]')
-        label=$(echo $label | sed 's/%20/\ /')
+    echo $master_label_data | jq -c .[] | while IFS=$'\n' read label; do
+		eval "$(echo $label | jq -r '@sh "name=\(.name) url=\(.url)"')"
         # Search by 'name' value instead of using `grep`
-        data=$(jq -cr ".labels[] | select(.legacy_names[]? | .==$label) | del(.legacy_names?)" < label-info.json)
-        label=$(echo $label | sed 's/\ /%20/')
+        data=$(jq -cr ".labels[] | select(.legacy_names[]? | .==\"$name\") | del(.legacy_names?)" < label-info.json)
         if [[ $data ]]; then
-            label="${label//\"}"
-            newLabel=$(echo $data | jq -r ".name")
-            echo "Renaming $label to $newLabel..."
+            echo "Renaming '$name' to '$(jq -rn "$data | .name")'"
             curl --user "$USER:$PASS" --include --request PATCH --data "$data" \
-                -H "Accept: application/vnd.github.symmetra-preview+json" \
-                "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels/$label"
+                -H "Accept: application/vnd.github.symmetra-preview+json" $url
         elif [[ $ANSWER = *Y* ]]; then
-            label="${label//\"}"
-            echo "Deleting label: $label"
-            curl --user "$USER:$PASS" --include --request DELETE "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels/$label"
+            echo "Deleting label: $name"
+            curl --user "$USER:$PASS" --include --request DELETE $url
         fi
    done
 }
