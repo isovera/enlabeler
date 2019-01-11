@@ -8,12 +8,6 @@
 # BEFORE RUNNING:
 #	Have GitHub login credentials ready
 
-function jsonValue(){
-	KEY=$1
-	num=$2
-	awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\042/){print $(i+1)}}}' | sed -n ${num}p
-}
-
 function update_and_delete(){
 	old_labels="${old_labels// /%20}"
     for label in ${old_labels[@]}
@@ -69,15 +63,15 @@ function manage_json_error(){
 
 function get_data(){
 	# Get current labels from GitHub API
-	old_labels=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels" | jsonValue name)
+	old_labels=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels" | jq .[].name)
 	master_label_data=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels")
 
 	# Get the GitHub repository ID
-	repo_ID=$(curl --user "$USER:$PASS" https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME" | jsonValue id)
+	repo_ID=$(curl --user "$USER:$PASS" https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME" | jq .id)
 	repo_ID=${repo_ID:0:10} # Grab the repo ID number
 
 	# Get range of issue nums
-	issue_nums=$(curl --user "$USER:$PASS" https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME/issues" | jsonValue number)
+	issue_nums=$(curl --user "$USER:$PASS" https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME/issues" | jq length)
 	max_issue=${issue_nums:0:2} # Grab the latest (i.e highest) active issue number
 
 	#Grab the pipeline IDs
