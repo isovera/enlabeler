@@ -16,7 +16,9 @@ function update_and_delete(){
         # Search by 'name' value instead of using `grep`
         data=$(jq -nc "$legacy_labels | .[] | select(.legacy_names==$name) | del(.legacy_names)")
         if [[ $data ]]; then
-            echo "Renaming $name to $(jq -n "$data | .name")"
+            new_name=$(jq -n "$data | .name")
+            echo "Renaming $name to $new_name"
+            labels_updated+=($new_name)
             curl --user "$USER:$PASS" --include --request PATCH --data "$data" \
                 -H "Accept: application/vnd.github.symmetra-preview+json" $url
         elif [[ $ANSWER = *Y* ]]; then
@@ -32,6 +34,14 @@ function add_defaults(){
         echo "Creating new label: $(jq -n "$new_label | .name")"
         curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
              "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
+    done
+    jq -nc "$legacy_labels | .[] | del(.legacy_names)" | while read new_label; do
+        name=$(jq -n "$new_label | .name")
+        if [[ ! "{$labels_updated[@]}" =~ $name ]]; then
+            echo "Creating new label: $name"
+            curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
+                 "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
+        fi
     done
 }
 
@@ -67,6 +77,7 @@ function get_data(){
 	# Get new label data from JSON file
 	default_labels=$(jq "[.labels[] | select(has(\"legacy_names\") | not)]" label-info.json)
 	legacy_labels=$(jq "[.labels[] | select(has(\"legacy_names\")) | .legacy_names = .legacy_names[]]" label-info.json)
+	labels_updated=()
 
 	temp=${repo_data%'","name":"Slated"'*}
 	slated_ID=${temp: -24} # Grab the pipeline number (assumes 24 digits)
