@@ -14,7 +14,7 @@ function update_and_delete(){
 		name=$(jq -n "$oldLabel | .name")
 		url=$(jq -rn "$oldLabel | .url")
         # Search by 'name' value instead of using `grep`
-        data=$(jq -c ".labels[] | select(.legacy_names[]? | .==$name) | {name, description, color}" label-info.json)
+        data=$(jq -nc "$legacy_labels | .[] | select(.legacy_names==$name) | del(.legacy_names)")
         if [[ $data ]]; then
             echo "Renaming $name to $(jq -n "$data | .name")"
             curl --user "$USER:$PASS" --include --request PATCH --data "$data" \
@@ -28,7 +28,7 @@ function update_and_delete(){
 
 function add_defaults(){
     # Iterate through all labels in JSON file except those renamed from legacy labels
-    jq -c '.labels[] | select(has("legacy_names") | not)' label-info.json | while IFS=$'\n' read new_label; do
+    jq -nc "$default_labels | .[]" | while IFS=$'\n' read new_label; do
         echo "Creating new label: $(jq -n "$new_label | .name")"
         curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
              "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
@@ -50,7 +50,6 @@ function manage_json_error(){
 
 function get_data(){
 	# Get current labels from GitHub API
-	old_labels=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels" | jq .[].name)
 	master_label_data=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels")
 
 	# Get the GitHub repository ID
@@ -64,6 +63,10 @@ function get_data(){
 	#Grab the pipeline IDs
 	temp=${repo_data%'","name":"Backlog"'*}
 	backlog_ID=${temp: -24} # Grab the pipeline number (assumes 24 digits)
+
+	# Get new label data from JSON file
+	default_labels=$(jq "[.labels[] | select(has(\"legacy_names\") | not)]" label-info.json)
+	legacy_labels=$(jq "[.labels[] | select(has(\"legacy_names\")) | .legacy_names = .legacy_names[]]" label-info.json)
 
 	temp=${repo_data%'","name":"Slated"'*}
 	slated_ID=${temp: -24} # Grab the pipeline number (assumes 24 digits)
