@@ -10,12 +10,13 @@
 
 function update_and_delete(){
 	old_labels="${old_labels// /%20}"
-    echo $master_label_data | jq -c .[] | while IFS=$'\n' read label; do
-		eval "$(echo $label | jq -r '@sh "name=\(.name) url=\(.url)"')"
+    jq -nc "$master_label_data | .[]" | while IFS=$'\n' read oldLabel; do
+		name=$(jq -n "$oldLabel | .name")
+		url=$(jq -rn "$oldLabel | .url")
         # Search by 'name' value instead of using `grep`
-        data=$(jq -cr ".labels[] | select(.legacy_names[]? | .==\"$name\") | del(.legacy_names?)" < label-info.json)
+        data=$(jq -c ".labels[] | select(.legacy_names[]? | .==$name) | {name, description, color}" label-info.json)
         if [[ $data ]]; then
-            echo "Renaming '$name' to '$(jq -rn "$data | .name")'"
+            echo "Renaming $name to $(jq -n "$data | .name")"
             curl --user "$USER:$PASS" --include --request PATCH --data "$data" \
                 -H "Accept: application/vnd.github.symmetra-preview+json" $url
         elif [[ $ANSWER = *Y* ]]; then
