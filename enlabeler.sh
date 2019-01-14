@@ -28,10 +28,9 @@ function update_and_delete(){
 
 function add_defaults(){
     # Iterate through all labels in JSON file except those renamed from legacy labels
-    jq -c '.labels[] | select(has("legacy_names") | not)' < label-info.json | while read line
-    do
-        echo "Creating new label: $line..."
-        curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$line" \
+    jq -c '.labels[] | select(has("legacy_names") | not)' label-info.json | while IFS=$'\n' read new_label; do
+        echo "Creating new label: $(jq -n "$new_label | .name")"
+        curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
              "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
     done
 }
