@@ -8,49 +8,40 @@
 # BEFORE RUNNING:
 #	Have GitHub login credentials ready
 
-function jsonValue(){
-	KEY=$1
-	num=$2
-	awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/'$KEY'\042/){print $(i+1)}}}' | sed -n ${num}p
-}
-
 function update_and_delete(){
 	old_labels="${old_labels// /%20}"
-    for label in ${old_labels[@]}
-    do
-        master_label_data=${master_label_data[@]#*'"url": "'}
-		# Format the label names
-        label="${label/'%20'/}"
-        if [ ! "${label: -1}" = '"' ]; then
-			manage_json_error $label
-		fi
-		#label=$(echo "$label" | tr '[:upper:]' '[:lower:]')
-        label=$(echo $label | sed 's/%20/\ /')
+    jq -nc "$master_label_data | .[]" | while IFS=$'\n' read oldLabel; do
+		name=$(jq -n "$oldLabel | .name")
+		url=$(jq -rn "$oldLabel | .url")
         # Search by 'name' value instead of using `grep`
-        data=$(jq -cr ".labels[] | select(.legacy_names[]? | .==$label) | del(.legacy_names?)" < label-info.json)
-        label=$(echo $label | sed 's/\ /%20/')
+        data=$(jq -nc "$legacy_labels | .[] | select(.legacy_names==$name) | del(.legacy_names)")
         if [[ $data ]]; then
-            label="${label//\"}"
-            newLabel=$(echo $data | jq -r ".name")
-            echo "Renaming $label to $newLabel..."
+            new_name=$(jq -n "$data | .name")
+            echo "Renaming $name to $new_name"
+            labels_updated+=($new_name)
             curl --user "$USER:$PASS" --include --request PATCH --data "$data" \
-                -H "Accept: application/vnd.github.symmetra-preview+json" \
-                "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels/$label"
+                -H "Accept: application/vnd.github.symmetra-preview+json" $url
         elif [[ $ANSWER = *Y* ]]; then
-            label="${label//\"}"
-            echo "Deleting label: $label"
-            curl --user "$USER:$PASS" --include --request DELETE "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels/$label"
+            echo "Deleting label: $name"
+            curl --user "$USER:$PASS" --include --request DELETE $url
         fi
    done
 }
 
 function add_defaults(){
     # Iterate through all labels in JSON file except those renamed from legacy labels
-    jq -c '.labels[] | select(has("legacy_names") | not)' < label-info.json | while read line
-    do
-        echo "Creating new label: $line..."
-        curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$line" \
+    jq -nc "$default_labels | .[]" | while IFS=$'\n' read new_label; do
+        echo "Creating new label: $(jq -n "$new_label | .name")"
+        curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
              "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
+    done
+    jq -nc "$legacy_labels | .[] | del(.legacy_names)" | while read new_label; do
+        name=$(jq -n "$new_label | .name")
+        if [[ ! "{$labels_updated[@]}" =~ $name ]]; then
+            echo "Creating new label: $name"
+            curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
+                 "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
+        fi
     done
 }
 
@@ -69,20 +60,24 @@ function manage_json_error(){
 
 function get_data(){
 	# Get current labels from GitHub API
-	old_labels=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels" | jsonValue name)
 	master_label_data=$(curl --user "$USER:$PASS" "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels")
 
 	# Get the GitHub repository ID
-	repo_ID=$(curl https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME" | jsonValue id)
+	repo_ID=$(curl --user "$USER:$PASS" https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME" | jq .id)
 	repo_ID=${repo_ID:0:10} # Grab the repo ID number
 
 	# Get range of issue nums
-	issue_nums=$(curl https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME/issues" | jsonValue number)
+	issue_nums=$(curl --user "$USER:$PASS" https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME/issues" | jq length)
 	max_issue=${issue_nums:0:2} # Grab the latest (i.e highest) active issue number
 
 	#Grab the pipeline IDs
 	temp=${repo_data%'","name":"Backlog"'*}
 	backlog_ID=${temp: -24} # Grab the pipeline number (assumes 24 digits)
+
+	# Get new label data from JSON file
+	default_labels=$(jq "[.labels[] | select(has(\"legacy_names\") | not)]" label-info.json)
+	legacy_labels=$(jq "[.labels[] | select(has(\"legacy_names\")) | .legacy_names = .legacy_names[]]" label-info.json)
+	labels_updated=()
 
 	temp=${repo_data%'","name":"Slated"'*}
 	slated_ID=${temp: -24} # Grab the pipeline number (assumes 24 digits)
