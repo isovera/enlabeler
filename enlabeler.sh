@@ -39,8 +39,8 @@ function add_defaults(){
         name=$(jq -n "$new_label | .name")
         if [[ ! "{$labels_updated[@]}" =~ $name ]]; then
             echo "Creating new label: $name"
-            curl -H "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --include --request POST --data "$new_label" \
-                 "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels"
+            curl -sH "Accept: application/vnd.github.symmetra-preview+json" --user "$USER:$PASS" --request POST --data "$new_label" \
+                 "https://api.github.com/repos/"$REPO_USER"/"$REPO_NAME"/labels" | jq . >&3
         fi
     done
 }
