@@ -110,9 +110,9 @@
       "description":"Job type: Content - requires translation of content to another language"
     },
     {
-      "name":"content",
+      "name":"content/data",
       "color":"ffeb6d",
-      "description":"Job type: Content - requires adding or updating content within the Drupal CMS"
+      "description":"Job type: Content - requires adding or changing content, data, or users within the Drupal CMS"
     },
     {
       "name":"documentation",
